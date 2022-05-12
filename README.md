@@ -25,3 +25,5 @@ turtlebot3_teleop: To control the turtlebot3
 turtlebot3_simulations: To bringup and deploy the turtlebot3 model.
 
 turtlebot3_navigation: To navigate through the environment given a map of the world
+
+note: turtlebot3 submodules need to be poperly set
