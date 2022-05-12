@@ -6,10 +6,13 @@ Panels:
       Expanded:
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Global Map1
         - /Global Map1/Costmap1
         - /Global Map1/Planner1
+        - /Local Map1
         - /Local Map1/Polygon1
         - /Local Map1/Costmap1
+        - /Local Map1/Costmap1/Position1
         - /Local Map1/Planner1
         - /Goal1
       Splitter Ratio: 0.5
@@ -276,7 +279,7 @@ Visualization Manager:
           Draw Behind: false
           Enabled: true
           Name: Costmap
-          Topic: /map
+          Topic: /move_base/local_costmap/costmap
           Unreliable: false
           Use Timestamp: false
           Value: true

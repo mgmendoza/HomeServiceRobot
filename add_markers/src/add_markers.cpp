@@ -32,10 +32,10 @@
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "visualization_marker");
+  ros::init(argc, argv, "add_marker");
   ros::NodeHandle n;
   ros::Rate r(1);
-  ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 0);
+  ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
   // Set our initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
@@ -59,8 +59,8 @@ int main( int argc, char** argv )
     marker.action = visualization_msgs::Marker::ADD;
 
     // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
-    marker.pose.position.x = -5.0;
-    marker.pose.position.y = -2.5;
+    marker.pose.position.x = -3.0;
+    marker.pose.position.y = -2.0;
     marker.pose.position.z = 0;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
@@ -75,7 +75,7 @@ int main( int argc, char** argv )
     // Set the color -- be sure to set alpha to something non-zero!
     marker.color.r = 0.0f;
     marker.color.g = 1.0f;
-    marker.color.b = 0.0f;
+    marker.color.b = 0.8f;
     marker.color.a = 1.0;
 
     marker.lifetime = ros::Duration();
@@ -90,6 +90,9 @@ int main( int argc, char** argv )
       ROS_WARN_ONCE("Please create a subscriber to the marker");
       sleep(1);
     }
+    
+    
+
     marker_pub.publish(marker);
 
     /*
