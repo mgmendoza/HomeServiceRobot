@@ -24,7 +24,9 @@ int main(int argc, char** argv){
 
   ros::NodeHandle n;
   ros::Subscriber sub = n.subscribe("visualization_marker", 10, getMarkerCallback);
-
+  ros::Publisher signal_pub = n.advertise<std_msgs::String>("signal",10);  
+  
+  
   //tell the action client that we want to spin a thread by default
   MoveBaseClient ac("move_base", true);
 
@@ -33,7 +35,8 @@ int main(int argc, char** argv){
     ROS_INFO("Waiting for the move_base action server to come up");
   }
 
-  ros::spinOnce(); 
+  std_msgs::String msg;
+  
   move_base_msgs::MoveBaseGoal goal;
 
   // set up the frame parameters
@@ -44,7 +47,7 @@ int main(int argc, char** argv){
   // pickup zone
   goal.target_pose.pose.position.x = -3.0;
   goal.target_pose.pose.position.y = -2.0;
-  goal.target_pose.pose.orientation.w = 1.0;
+  goal.target_pose.pose.orientation.w = 1.57;
 
    // Send the goal position and orientation for the robot to reach
   ROS_INFO("Sending goal");
@@ -53,23 +56,33 @@ int main(int argc, char** argv){
   // Wait an infinite time for the results
   ac.waitForResult();
 
+  ros::Duration(5.0).sleep();  
+  msg.data = "delete marker";
+  signal_pub.publish(msg);
+  
   // Check if the robot reached its goal
   if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
     ROS_INFO("The robot reached pickup zone");
+
     ros::Duration(5.0).sleep();
     
-    ROS_INFO("Heading towardsdropoff location");
-    goal.target_pose.pose.position.x = -5.0;
+    ROS_INFO("Heading towards dropoff location");
+    goal.target_pose.pose.position.x = -5.5;
     goal.target_pose.pose.position.y = -0.5;
+    goal.target_pose.pose.orientation.w = 1.57;
+
     ac.sendGoal(goal);
-    ros::Duration(5.0).sleep();
-  
+    ac.waitForResult();
+
     if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
-       ROS_INFO("The robot reached dropoff zone");
-       ros::Duration(10.0).sleep();
+
+      ROS_INFO("The robot reached dropoff zone");
+      msg.data = "add goal 2 marker";
+      signal_pub.publish(msg);
+      ros::Duration(5.0).sleep();
     }
     else{
-       ROS_INFO("Robot failed to reach droppff zone");
+       ROS_INFO("Robot failed to reach dropoff zone");
     }
   }
   else{
