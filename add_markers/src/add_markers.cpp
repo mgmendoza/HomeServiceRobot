@@ -47,7 +47,7 @@ int main( int argc, char** argv )
 {
   ros::init(argc, argv, "add_marker");
   ros::NodeHandle n;
-  //ros::Rate r(1);
+  ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
   ros::Subscriber signal_sub = n.subscribe("signal", 5, Signalcallback);
 
@@ -105,27 +105,29 @@ int main( int argc, char** argv )
         
        marker.type = visualization_msgs::Marker::CUBE;
        marker.action = visualization_msgs::Marker::ADD;
-       marker.lifetime  = ros::Duration();
        marker_pub.publish(marker);  
        ROS_INFO("test");
-       ros::Duration(5.0).sleep();
+       ros::Duration(10.0).sleep();
        ROS_INFO("test time"); 
 
 
        marker.action = visualization_msgs::Marker::DELETE;
        marker_pub.publish(marker);
        
+        
+       ROS_INFO("test time 2"); 
        ros::Duration(5.0).sleep();	
-       
+        
+       ROS_INFO("test time 3"); 
+
        
        marker.type = visualization_msgs::Marker::CUBE;
-       marker.action = visualization_msgs::Marker::ADD;
        marker.pose.position.x = -5.5;
        marker.pose.position.y = -0.5;
        marker.pose.position.z = 0;
        marker.action = visualization_msgs::Marker::ADD;
-       marker.lifetime = ros::Duration();
        marker_pub.publish(marker);
+       ROS_INFO("test time 4");
        
     }
     
@@ -153,7 +155,7 @@ int main( int argc, char** argv )
     }
 
     ros::spinOnce();
-    //r.sleep();
+    r.sleep();
   
   }
     
