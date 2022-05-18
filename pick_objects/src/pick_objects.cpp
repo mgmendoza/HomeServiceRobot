@@ -70,6 +70,7 @@ int main(int argc, char** argv){
     goal.target_pose.pose.position.x = -5.5;
     goal.target_pose.pose.position.y = -0.5;
     goal.target_pose.pose.orientation.w = 1.57;
+    goal.target_pose.pose.position.z = 0.5;
 
     ac.sendGoal(goal);
     ac.waitForResult();

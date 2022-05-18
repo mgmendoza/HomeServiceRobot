@@ -29,31 +29,21 @@
 
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
-#include <cmath>
-#include <iostream>
-#include <std_msgs/String.h>
-#include <string>
 
-
-std::string signal;
-
-// Signal to control marker
-void Signalcallback(const std_msgs::String &msg2)
-{
-    signal = msg2.data;
-}
 
 int main( int argc, char** argv )
 {
-  ros::init(argc, argv, "add_marker");
+  ros::init(argc, argv, "add_markers_timed");
   ros::NodeHandle n;
   ros::Rate r(1);
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-  ros::Subscriber signal_sub = n.subscribe("signal", 5, Signalcallback);
+
 
   // Set our shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
-
+  // set states [0: pickup marker, 1: remove marker, 2: dropoff marker]
+  uint32_t state = 0;
+  
   
   while (ros::ok())
   {  
@@ -77,7 +67,7 @@ int main( int argc, char** argv )
 
     // Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
     marker.pose.position.x = -3.0;
-    marker.pose.position.y = -2.0;
+    marker.pose.position.y =  -2.0;
     marker.pose.position.z = 0;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
@@ -90,41 +80,49 @@ int main( int argc, char** argv )
     marker.scale.z = 0.2;
 
     // Set the color -- be sure to set alpha to something non-zero!
-    marker.color.r = 0.0f;
-    marker.color.g = 1.0f;
+    marker.color.r = 1.0f;
+    marker.color.g = 0.0f;
     marker.color.b = 0.8f;
     marker.color.a = 1.0;
 
-
     marker.lifetime  = ros::Duration();
-    marker_pub.publish(marker);  
-    
-    
-    
-    
-    if (signal == "delete marker")
-    {
-        //ROS_INFO("delete marker");
+
+
+    switch (state){
+      case 0:{
+        //marker_pub.publish(marker);  
+        marker.action = visualization_msgs::Marker::ADD;
+        marker.pose.position.x = -3.0;
+        marker.pose.position.y =  -2.0;
+        marker.pose.position.z = 0;
+        marker_pub.publish(marker);  
+        state++;
+        ROS_INFO("publishing marker");
+        break;
+      }
+      case 1:{
+        marker_pub.publish(marker); 
+        ROS_INFO("delete marker"); 
+        sleep(5.0);
         marker.action = visualization_msgs::Marker::DELETE;
         marker_pub.publish(marker);
-    }      
-
-
-    // Publish the marker to the second goal   
-    if (signal == "add goal 2 marker")
-    {
-        //ROS_INFO ("Drop off");
-        marker.type = visualization_msgs::Marker::CUBE;
-        marker.action = visualization_msgs::Marker::ADD;    
+        state++;     
+        sleep(5.0);
+      }
+      case 2:{
+        ROS_INFO ("Drop off");
         marker.pose.position.x = -5.5;
-        marker.pose.position.y = -0.5;
+        marker.pose.position.y = -1.5;
         marker.pose.position.z = 0.5;    
         marker.action = visualization_msgs::Marker::ADD;
-        marker.lifetime = ros::Duration();
         marker_pub.publish(marker);
+        sleep(10);
+        return 0;
+      }
     }
 
     ros::spinOnce();
+
     r.sleep();
   
   }

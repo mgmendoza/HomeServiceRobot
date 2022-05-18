@@ -120,9 +120,12 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/add_markers.cpp
-# )
+#add_library(add_markers
+#  src/add_markers/add_markers.cpp)
+
+#add_library(add_markers_timed 
+#  src/add_markers/add_markers_timed.cpp)
+
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,6 +136,10 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(add_markers src/add_markers.cpp)
+target_link_libraries(add_markers ${catkin_LIBRARIES})
+
+add_executable(add_markers_timed src/add_markers_timed.cpp)
+target_link_libraries(add_markers_timed ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -142,12 +149,10 @@ add_executable(add_markers src/add_markers.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(add_markers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+#add_dependencies(add_markers ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(add_markers
-   ${catkin_LIBRARIES}
- )
+
 
 #############
 ## Install ##
